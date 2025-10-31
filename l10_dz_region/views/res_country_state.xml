@@ -5,17 +5,17 @@
 
 
 
-     <record id="l10_dz_region_res_country_state_tree_inherit" model="ir.ui.view">
-        <field name="name">l10n.dz.regions.res.country.state.tree.inherit</field>
+     <record id="l10_dz_region_res_country_state_list_inherit" model="ir.ui.view">
+        <field name="name">l10n.dz.regions.res.country.state.list.inherit</field>
         <field name="model">res.country.state</field>
         <field name="priority">10</field>
         <field name="arch" type="xml">
-                <tree string="State">
+                <list string="State">
                     <field name="code"/>
                     <field name="name"/>
                     <field name="country_id" options="{'no_create': True, 'no_open': True}"/>
                     <!-- <button name="action_read_state" type="object" icon="fa-external-link" class="oe_highlight"/> -->
-                </tree>
+                </list>
         </field>
     </record> 
 
@@ -67,9 +67,9 @@
     <record id="base.action_country_state" model="ir.actions.act_window">
         <field name="name">État - States</field>
         <field name="res_model">res.country.state</field>
-        <field name="view_mode">tree,form</field> <!-- Make sure "form" is included -->
+        <field name="view_mode">list,form</field> <!-- Make sure "form" is included -->
         <field name="search_view_id" ref="l10_dz_region_view_country_state_search"/>
-        <field name="view_id" ref="l10_dz_region_res_country_state_tree_inherit"/> <!-- Link to the correct tree view -->
+        <field name="view_id" ref="l10_dz_region_res_country_state_list_inherit"/> <!-- Link to the correct list view -->
         <field name="context">{"search_default_countryalg":1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
