@@ -5,23 +5,32 @@ class FormeJuridique(models.Model):
     _description = "Forme juridique"
     _order = "name"
 
-    name = fields.Char(string="Forme juridique", required=True, index=True, tracking=True)
-    code = fields.Char(string="Code", index=True, tracking=True)
+    name = fields.Char(string="Forme juridique", required=True, index=True)
+    code = fields.Char(string="Code", index=True)
     company_id = fields.Many2one('res.company', string='Société', default=lambda self: self.env.company.id)
+
+    def _valid_field_parameter(self, field, name):
+        # Autoriser le paramètre tracking même s'il n'est pas utilisé
+        return name == 'tracking' or super()._valid_field_parameter(field, name)
+
+    _sql_constraints = [
+        ('code_unique', 'UNIQUE(code, company_id)', 'Le code de forme juridique doit être unique par société !'),
+    ]
 
     def name_get(self):
         result = []
         for record in self:
-            display_name = record.name
-            if record.code:
-                display_name = f"{record.code} - {record.name}"
-            result.append((record.id, display_name))
+            name = f"[{record.code}] {record.name}" if record.code else record.name
+            result.append((record.id, name))
         return result
 
     @api.model
-    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
-        args = args or []
-        domain = []
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        if args is None:
+            args = []
+
+        domain = args[:]
         if name:
-            domain = ['|', ('name', operator, name), ('code', operator, name)]
-        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
+            domain += ['|', ('name', operator, name), ('code', operator, name)]
+
+        return self.search(domain, limit=limit).name_get()

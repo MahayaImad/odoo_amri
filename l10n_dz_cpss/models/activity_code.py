@@ -7,9 +7,9 @@ class ActivityCode(models.Model):
     _name = "activity.code"
     _description = "Code d'activité"
 
-    name = fields.Char(string="Nom", required=True, index=True, tracking=True)
+    name = fields.Char(string="Nom", required=True, index=True)
     company_id = fields.Many2one('res.company', string='Société', default=lambda self: self.env.company.id)
-    code = fields.Integer(string="Code", required=True, index=True, tracking=True)
+    code = fields.Integer(string="Code", required=True, index=True)
     is_principal = fields.Boolean(string="C'est le code principal")
     regulation = fields.Selection(
         string="Réglementation",
@@ -21,19 +21,28 @@ class ActivityCode(models.Model):
         default='none'
     )
 
-    # Concaténation du Code et du Nom dans les vues Partner et Company
+    def _valid_field_parameter(self, field, name):
+        # Autoriser le paramètre tracking même s'il n'est pas utilisé
+        return name == 'tracking' or super()._valid_field_parameter(field, name)
+
+    _sql_constraints = [
+        ('code_unique', 'UNIQUE(code, company_id)', 'Le code d\'activité doit être unique par société !'),
+    ]
+
     def name_get(self):
         result = []
         for record in self:
-            result.append(
-                (record.id, (record.code and (str(record.code) + ' - ') or '') + record.name))
+            name = f"[{record.code}] {record.name}" if record.code else record.name
+            result.append((record.id, name))
         return result
 
     @api.model
-    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
-        args = args or []
-        domain = []
-        if name:
-            domain = ['|', ('name', operator, name), ('code', operator, name)]
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        if args is None:
+            args = []
 
-        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
+        domain = args[:]
+        if name:
+            domain += ['|', ('name', operator, name), ('code', operator, name)]
+
+        return self.search(domain, limit=limit).name_get()

@@ -5,23 +5,24 @@
     'name': "Comptabilité - Algérie CPSS",
     'summary': """ Plan comptable aux normes algériennes - Version CPSS. """,
     'description': """
-Plan comptable algérien CPSS
-============================
+Plan comptable algérien CPSS - Odoo 18
+======================================
 
 Ce module fournit :
-* Plan comptable conforme aux normes algériennes
-* Taxes algériennes (TVA, etc.)
+* Plan comptable conforme aux normes algériennes (PCG)
+* Comptes de base organisés par classes
+* Taxes algériennes (TVA, TAP, etc.)
 * Positions fiscales
 * Codes d'activité
 * Formes juridiques
 * Champs spécifiques aux entreprises algériennes (NIS, NIF, RC, AI)
-* Configuration des rapports avec secteur d'activité
+* Configuration automatique des comptes par défaut
 
-Adapté pour Odoo 18.0
+Adapté pour Odoo 18.0 - Nouvelle architecture comptable
 """,
 
     'category': 'Accounting/Localizations/Account Charts',
-    'version': '18.0.1.0',
+    'version': '18.0.1.1',
 
     "contributors": [
         "Migration Odoo 18 - CPSS Version",
@@ -42,27 +43,18 @@ Adapté pour Odoo 18.0
         'sale_management',
     ],
 
-    'assets': {
-        'web.assets_backend': [
-            "l10n_dz_cpss/static/src/js/many_tags_link.js",
-        ],
-    },
-
     'data': [
         # Sécurité d'abord
         'security/ir.model.access.csv',
         'security/rules.xml',
 
-        # Données de base
+        # Données de base (ordre important)
         'data/default_data.xml',
-        'data/l10n_dz_base_chart_data.xml',
-        'data/account_group.xml',
-        'data/account_account_template_data.xml',
-        'data/account_chart_template_data.xml',
-        'data/account_tax_data.xml',
-        'data/account_fiscal_position_template_data.xml',
-        'data/account_chart_template_configure_data.xml',
-        'data/company_function.xml',
+        #'data/l10n_dz_base_chart_data.xml',  # Groupes et tags
+        #'data/account_accounts_base_data.xml',  # Comptes de base
+        #'data/account_tax_data.xml',
+        #'data/account_fiscal_position_template_data.xml',
+        #'data/company_defaults.xml',  # Configuration par défaut
 
         # Vues
         "views/forme_juridique.xml",
@@ -74,7 +66,7 @@ Adapté pour Odoo 18.0
 
     'images': ['images/banner.gif'],
 
-    'post_init_hook': '_preserve_tag_on_taxes',
+    #'post_init_hook': '_l10n_dz_post_init',
 
     'installable': True,
     'auto_install': False,

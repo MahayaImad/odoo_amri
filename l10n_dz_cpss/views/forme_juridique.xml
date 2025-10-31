@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Vue liste des formes juridiques -->
-    <record id="forme_juridique_tree_view" model="ir.ui.view">
-        <field name="name">forme.juridique.tree</field>
+    <record id="forme_juridique_list_view" model="ir.ui.view">
+        <field name="name">forme.juridique.list</field>
         <field name="model">forme.juridique</field>
         <field name="arch" type="xml">
-            <tree string="Formes juridiques">
+            <list string="Formes juridiques">
                 <field name="code"/>
                 <field name="name"/>
                 <field name="company_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -53,7 +53,7 @@
     <record id="forme_juridique_action" model="ir.actions.act_window">
         <field name="name">Formes juridiques</field>
         <field name="res_model">forme.juridique</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="forme_juridique_search_view"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
